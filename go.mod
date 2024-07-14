@@ -1,4 +1,4 @@
-module main
+module github.com/nicholaspark09/cincinnatiticketlibrary
 
 go 1.21.4
 

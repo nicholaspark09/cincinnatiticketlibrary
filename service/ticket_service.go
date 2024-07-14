@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"github.com/nicholaspark09/awsgorocket/metrics"
 	"github.com/nicholaspark09/awsgorocket/network_v2"
+	"github.com/nicholaspark09/cincinnatiticketlibrary/model"
+	"github.com/nicholaspark09/cincinnatiticketlibrary/model/ticket_model_request"
 	"log"
-	"main/model"
-	"main/model/ticket_model_request"
 )
 
 type TicketService struct {

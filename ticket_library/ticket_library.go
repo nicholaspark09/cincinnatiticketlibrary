@@ -2,7 +2,7 @@ package ticket_library
 
 import (
 	"github.com/nicholaspark09/awsgorocket/metrics"
-	"main/service"
+	"github.com/nicholaspark09/cincinnatiticketlibrary/service"
 )
 
 type TicketLibrary struct {
@@ -31,6 +31,7 @@ func ProvideTicketLibrary(
 			ticketApiKey,
 			clientId,
 			teamId,
+			autoCutKey,
 			metricsManager),
 	}
 }

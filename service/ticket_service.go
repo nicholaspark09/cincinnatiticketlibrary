@@ -33,6 +33,7 @@ func ProvideTicketService(
 		ClientId:       clientId,
 		ContentType:    "application/json",
 		TeamId:         teamId,
+		AutoCutKey:     autoCutKey,
 		metricsManager: metricsManager,
 	}
 }

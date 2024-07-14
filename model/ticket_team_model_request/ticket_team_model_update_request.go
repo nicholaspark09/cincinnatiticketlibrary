@@ -1,6 +1,6 @@
 package ticket_team_model_request
 
-import "main/model"
+import "github.com/nicholaspark09/cincinnatiticketlibrary/model"
 
 type TicketTeamModelUpdateRequest struct {
 	UserId string                `json:"user_id"`

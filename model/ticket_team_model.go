@@ -11,5 +11,6 @@ type TicketTeamModel struct {
 	Category    string `json:"category"`
 	Created     string `json:"created"`
 	Modified    string `json:"modified"`
+	OnCall      string `json:"on_call"`
 	Status      string `json:"status"`
 }

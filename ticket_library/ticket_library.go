@@ -6,12 +6,16 @@ import (
 )
 
 type TicketLibrary struct {
-	clientId       string
-	teamId         string
-	ticketEndpoint string
-	ticketApiKey   string
-	autoCutKey     string
-	TicketService  service.TicketService
+	clientId                string
+	teamId                  string
+	ticketEndpoint          string
+	ticketApiKey            string
+	autoCutKey              string
+	TicketService           service.TicketService
+	TicketCommentService    service.TicketCommentService
+	TicketWatchService      service.TicketWatchService
+	TicketTeamService       service.TicketTeamService
+	TicketTeamMemberService service.TicketTeamMemberService
 }
 
 func ProvideTicketLibrary(
@@ -33,5 +37,9 @@ func ProvideTicketLibrary(
 			teamId,
 			autoCutKey,
 			metricsManager),
+		TicketCommentService:    service.ProvideTicketCommentService(ticketEndpoint, ticketApiKey, metricsManager),
+		TicketWatchService:      service.ProvideTicketWatchService(ticketEndpoint, ticketApiKey, metricsManager),
+		TicketTeamService:       service.ProvideTicketTeamService(ticketEndpoint, ticketApiKey, metricsManager),
+		TicketTeamMemberService: service.ProvideTicketTeamMemberService(ticketEndpoint, ticketApiKey, metricsManager),
 	}
 }

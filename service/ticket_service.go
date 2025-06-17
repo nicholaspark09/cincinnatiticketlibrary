@@ -2,8 +2,12 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/nicholaspark09/awsgorocket/metrics"
+	response "github.com/nicholaspark09/awsgorocket/model"
+	network2 "github.com/nicholaspark09/awsgorocket/network"
 	"github.com/nicholaspark09/awsgorocket/network_v2"
+	"github.com/nicholaspark09/awsgorocket/utils"
 	"github.com/nicholaspark09/cincinnatiticketlibrary/model"
 	"github.com/nicholaspark09/cincinnatiticketlibrary/model/ticket_model_request"
 	"log"
@@ -78,12 +82,35 @@ func (ticketService *TicketService) CreateAutocut(
 	return networkResponse != nil
 }
 
-func (ticketService *TicketService) Create(
-	title string,
-	description string,
-	files string,
-	severity int,
-	userId string,
-) {
-
+func (ticketService *TicketService) Fetch(partitionKey string, rangeKey string) response.Response[model.TicketModel] {
+	params := map[string]string{
+		"controller": "tickets",
+		"action":     "fetch",
+	}
+	manager := network2.ProvideNetworkManager[model.TicketModel](ticketService.Endpoint, params, &ticketService.ApiKey, &ticketService.ContentType)
+	bytes, parseError := json.Marshal(model.FetchRequest{
+		PartitionKey: partitionKey,
+		RangeKey:     rangeKey,
+		UserId:       "",
+	})
+	if parseError != nil {
+		log.Printf("TicketService.FetchAllFailure - Failed to parse FetchRequest properly: %v", parseError)
+		return response.Response[model.TicketModel]{StatusCode: 400, Message: "Incorrect body"}
+	}
+	networkResponse, networkError := metrics.MeasureTimeWithError("TicketService.FetchAll", ticketService.metricsManager, func() (*model.TicketModel, *error) {
+		callResponse := network2.Post[model.TicketModel](manager, bytes)
+		if callResponse.StatusCode != 200 {
+			log.Printf("TicketService.FetchFailure - StatusCode: %v, Failed to fetch podmembers because: %v", callResponse.StatusCode, callResponse.Error)
+			return nil, callResponse.Error
+		} else {
+			log.Printf("TicketService.FetchSuccess - StatusCode: %v, Successfully fetched for PK: %s, RK: %s", callResponse.StatusCode, partitionKey, rangeKey)
+		}
+		return callResponse.Data, nil
+	})
+	var genericError utils.GenericError
+	if networkError != nil && errors.As(*networkError, &genericError) {
+		log.Printf("TicketService.FetchFailure - Failed to fetch any podmembers. Error: %v", networkError)
+		return response.Response[model.TicketModel]{StatusCode: genericError.StatusCode, Message: genericError.Message}
+	}
+	return response.Response[model.TicketModel]{Data: networkResponse, StatusCode: 200}
 }

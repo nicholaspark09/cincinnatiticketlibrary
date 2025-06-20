@@ -29,7 +29,7 @@ func ProvideTicketWatchService(
 		endpoint:       endpoint,
 		apiKey:         apiKey,
 		contentType:    "application/json",
-		controllerName: "ticket-watch",
+		controllerName: "watchers",
 		metricsManager: metricsManager,
 	}
 }
